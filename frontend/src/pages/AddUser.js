@@ -14,9 +14,8 @@ function Users() {
   // 🔍 Search + Filter Logic
   const filteredUsers = users.filter((u) => {
     const matchesSearch =
-      u.name.toLowerCase().includes(search.toLowerCase()) ||
-      u.email.toLowerCase().includes(search.toLowerCase()) ||
-      u.address.toLowerCase().includes(search.toLowerCase());
+      (u.name || "").toLowerCase().includes(search.toLowerCase()) ||
+      (u.email || "").toLowerCase().includes(search.toLowerCase());
 
     const matchesRole =
       roleFilter === "ALL" ? true : u.role === roleFilter;
@@ -31,7 +30,7 @@ function Users() {
       {/* 🔍 SEARCH + FILTER */}
       <div style={topControls}>
         <input
-          placeholder="Search by name, email, address..."
+          placeholder="Search by name, email"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           style={searchInput}
@@ -55,7 +54,6 @@ function Users() {
           <tr>
             <th style={th}>Name</th>
             <th style={th}>Email</th>
-            <th style={th}>Address</th>
             <th style={th}>Role</th>
           </tr>
         </thead>
@@ -72,15 +70,14 @@ function Users() {
                 (e.currentTarget.style.background = "rgba(255,255,255,0.1)")
               }
               onMouseLeave={(e) =>
-                (e.currentTarget.style.background =
-                  index % 2 === 0
-                    ? "rgba(255,255,255,0.03)"
-                    : "transparent")
+              (e.currentTarget.style.background =
+                index % 2 === 0
+                  ? "rgba(255,255,255,0.03)"
+                  : "transparent")
               }
             >
               <td style={td}>{u.name}</td>
               <td style={td}>{u.email}</td>
-              <td style={td}>{u.address}</td>
               <td style={td}>
                 <span style={roleBadge(u.role)}>{u.role}</span>
               </td>
@@ -155,6 +152,6 @@ const roleBadge = (role) => ({
     role === "ADMIN"
       ? "#ef4444"
       : role === "OWNER"
-      ? "#3b82f6"
-      : "#10b981",
+        ? "#3b82f6"
+        : "#10b981",
 });

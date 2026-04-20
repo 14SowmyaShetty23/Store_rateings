@@ -19,10 +19,10 @@ function AdminLayout({ children }) {
       <div style={sidebar}>
         <h2 style={logo}>⚡ Store Admin</h2>
 
-        <SidebarItem icon={<FaHome />} label="Dashboard" path="/dashboard" />
+        <SidebarItem icon={<FaHome />} label="Dashboard" path="/AdminDashboard" />
         <SidebarItem icon={<FaUsers />} label="Users" path="/users" />
         <SidebarItem icon={<FaStore />} label="Stores" path="/stores" />
-        <SidebarItem icon={<FaPlus />} label="Add User" path="/add-user" />
+        {/* <SidebarItem icon={<FaPlus />} label="Add User" path="/add-user" /> */}
         <SidebarItem icon={<FaPlus />} label="Add Store" path="/add-store" />
 
         <div style={{ marginTop: "auto" }}>

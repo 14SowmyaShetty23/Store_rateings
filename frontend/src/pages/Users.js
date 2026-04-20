@@ -31,8 +31,7 @@ function Users() {
     <tr>
       <th style={th}>Name</th>
       <th style={th}>Email</th>
-      <th style={th}>Address</th>
-      <th style={th}>Role</th>
+            <th style={th}>Role</th>
       <th style={th}>Actions</th>
     </tr>
   </thead>
@@ -42,7 +41,7 @@ function Users() {
       <tr key={u.id}>
   <td style={td}>{u.name}</td>
   <td style={td}>{u.email}</td>
-  <td style={td}>{u.address}</td>
+  
   <td style={td}>
     <span style={roleBadge(u.role)}>{u.role}</span>
   </td>
@@ -93,14 +92,6 @@ const deleteBtn = {
 const td = {
   padding: "12px",
   color: "#e2e8f0",
-};
-
-const rowEven = {
-  background: "rgba(255,255,255,0.03)",
-};
-
-const rowOdd = {
-  background: "transparent",
 };
 
 const roleBadge = (role) => ({

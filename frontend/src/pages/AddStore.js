@@ -5,9 +5,10 @@ import AdminLayout from "../components/AdminLayout";
 function AddStore() {
   const [form, setForm] = useState({
     name: "",
+    owner_name: "",
+    location: "",
     email: "",
-    address: "",
-    owner_id: "",
+    password: "",
   });
 
   const handleChange = (e) => {
@@ -15,21 +16,63 @@ function AddStore() {
   };
 
   const submit = async () => {
-    await API.post("/admin/add-store", form);
-    alert("Store added");
+    try {
+      await API.post("/admin/add-store", form);
+      alert("Store added successfully");
+    } catch (err) {
+      console.log("Add store error:", err.response?.data || err.message);
+      alert("Error adding store: " + (err.response?.data?.error || err.message));
+    }
   };
 
   return (
     <AdminLayout>
       <h2 style={heading}>Add Store</h2>
 
-      <div style={card}>
-        <input name="name" placeholder="Store Name" onChange={handleChange} style={input} />
-        <input name="email" placeholder="Email" onChange={handleChange} style={input} />
-        <textarea name="address" placeholder="Address" onChange={handleChange} style={textarea} />
-        <input name="owner_id" placeholder="Owner ID" onChange={handleChange} style={input} />
+      <div style={container}>
+        <div style={card}>
 
-        <button onClick={submit} style={button}>Create Store</button>
+          <input
+            name="name"
+            placeholder="Store Name"
+            onChange={handleChange}
+            style={input}
+          />
+
+          <input
+            name="owner_name"
+            placeholder="Owner Name"
+            onChange={handleChange}
+            style={input}
+          />
+
+          <textarea
+            name="location"
+            placeholder="Location / Address"
+            onChange={handleChange}
+            style={textarea}
+          />
+
+          <input
+            name="email"
+            placeholder="Store Admin Email"
+            onChange={handleChange}
+            style={input}
+          />
+
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            onChange={handleChange}
+            style={input}
+          />
+
+          <button onClick={submit} style={button}>
+            Create Store
+          </button>
+
+        </div>
       </div>
     </AdminLayout>
   );
@@ -39,10 +82,16 @@ export default AddStore;
 const heading = {
   color: "white",
   marginBottom: "20px",
+  textAlign: "center",
+};
+
+const container = {
+  display: "flex",
+  justifyContent: "center",
 };
 
 const card = {
-  maxWidth: "400px",
+  width: "400px",
   background: "rgba(255,255,255,0.08)",
   backdropFilter: "blur(10px)",
   padding: "25px",

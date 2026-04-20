@@ -26,8 +26,8 @@ const handleDelete = async (id) => {
   // 🔍 Search + Filter Logic
   const filteredStores = stores.filter((s) => {
     const matchesSearch =
-      s.name.toLowerCase().includes(search.toLowerCase()) ||
-      s.address.toLowerCase().includes(search.toLowerCase());
+      (s.name || "").toLowerCase().includes(search.toLowerCase()) ||
+      (s.address || "").toLowerCase().includes(search.toLowerCase());
 
     const matchesFilter =
       filter === "ALL"

@@ -3,12 +3,12 @@ const db = require("../config/db");
 const bcrypt = require("bcryptjs");
 
 exports.addUser = async (req, res) => {
-  const { name, email, password, address, role } = req.body;
+  const { name, email, password, role } = req.body;
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
   db.query(
-    "INSERT INTO users (name, email, password, address, role) VALUES (?, ?, ?, ?, ?)",
+    "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
     [name, email, hashedPassword, address, role],
     (err, result) => {
       if (err) return res.status(500).json(err);
@@ -17,19 +17,47 @@ exports.addUser = async (req, res) => {
   );
 };
 
-exports.addStore = (req, res) => {
-  const { name, email, address, owner_id } = req.body;
+exports.addStore = async (req, res) => {
+  const { name, owner_name, location, email, password } = req.body;
 
-  db.query(
-    "INSERT INTO stores (name, email, address, owner_id) VALUES (?, ?, ?, ?)",
-    [name, email, address, owner_id],
-    (err, result) => {
-      if (err) return res.status(500).json(err);
-      res.json({ msg: "Store added" });
-    }
-  );
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // 👉 Step 1: create store owner user
+    const userQuery = `
+      INSERT INTO users (name, email, password, role)
+      VALUES (?, ?, ?, 'OWNER')
+    `;
+
+    db.query(userQuery, [owner_name, email, hashedPassword], (err, userResult) => {
+      if (err) {
+        return res.status(500).json({ error: "User creation failed", err });
+      }
+
+      const ownerId = userResult.insertId;
+
+      // 👉 Step 2: create store (use YOUR columns)
+      const storeQuery = `
+        INSERT INTO stores (name, email, address, owner_id)
+        VALUES (?, ?, ?, ?)
+      `;
+
+      db.query(storeQuery, [name, email, location, ownerId], (err2, storeResult) => {
+        if (err2) {
+          return res.status(500).json({ error: "Store creation failed", err2 });
+        }
+
+        res.json({
+          message: "Store created successfully",
+          storeId: storeResult.insertId
+        });
+      });
+    });
+
+  } catch (error) {
+    res.status(500).json({ error });
+  }
 };
-
 
 exports.getDashboard = (req, res) => {
   const queries = {
@@ -56,7 +84,7 @@ exports.getDashboard = (req, res) => {
 };
 exports.getUsers = (req, res) => {
   db.query(
-    "SELECT id, name, email, address, role FROM users",
+    "SELECT id, name, email, role FROM users",
     (err, result) => {
       if (err) return res.status(500).json(err);
       res.json(result);
